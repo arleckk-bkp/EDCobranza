@@ -128,7 +128,7 @@ public class GestorActivity extends AppCompatActivity {
         }  catch (JSONException e) {
             e.printStackTrace();
         }
-        mAccounts.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,accounts));
+        mAccounts.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,accounts));
         Log.v("volley_debug","accounts: "+accounts.toString());
     }
 
