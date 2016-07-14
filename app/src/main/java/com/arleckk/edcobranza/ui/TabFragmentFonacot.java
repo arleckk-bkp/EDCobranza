@@ -64,8 +64,8 @@ public class TabFragmentFonacot extends Fragment{
         {
             switch (position){
                 case 0 : return new TrabajadorFonacotFragment();
-                case 1 : return new TrabajadorFonacotFragment();
-                case 2 : return new TrabajadorFonacotFragment();
+                case 1 : return new ReferenciaFonacotFragment();
+                case 2 : return new ReferenciaFonacotFragment();
                 case 3 : return new MapsFragment();
             }
             return null;

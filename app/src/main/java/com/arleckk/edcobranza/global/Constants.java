@@ -11,6 +11,6 @@ public class Constants {
 
     public static final String GET_FONACOT_ACCOUNTS_BY_USER = IP + PORT_HOST + "/webservices/fonacot/obtener-creditos-usuario.php";
 
-    public static final String GET_FONACOT_CLIENTE_BY_ID = IP + PORT_HOST + "/webservices/fonacot/obtener-trabajador.php";
+    public static final String GET_FONACOT_TRABAJADOR_BY_ID = IP + PORT_HOST + "/webservices/fonacot/obtener-trabajador.php";
 
 }

@@ -11,8 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,7 +23,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.arleckk.edcobranza.R;
 import com.arleckk.edcobranza.global.Constants;
+import com.arleckk.edcobranza.global.Singleton;
 import com.arleckk.edcobranza.global.VolleyEverywhere;
+import com.arleckk.edcobranza.model.TrabajadorFonacot;
 import com.arleckk.edcobranza.services.UpdateLocation;
 
 import org.json.JSONArray;
@@ -40,12 +45,12 @@ public class GestorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gestor);
 
-        loadAccounts();
-
         mAccounts = (Spinner) findViewById(R.id.spinner_accounts);
 
+        loadAccounts();
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mNavigationView = (NavigationView) findViewById(R.id.shitstuff) ;
+        mNavigationView = (NavigationView) findViewById(R.id.menu_drawer) ;
 
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
@@ -84,6 +89,26 @@ public class GestorActivity extends AppCompatActivity {
 
         });
 
+        mAccounts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String item = mAccounts.getItemAtPosition(position).toString();
+
+                if (item != null) {
+                    if (!item.equals("")) {
+                        loadTrabajador(mAccounts.getItemAtPosition(position).toString());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout, toolbar,R.string.app_name,
                 R.string.app_name);
@@ -119,7 +144,6 @@ public class GestorActivity extends AppCompatActivity {
     }
 
     private void getAccounts(JSONArray response) {
-        Log.v("volley_debug","response to string: "+response.toString());
         String[] accounts = new String[response.length()];
         try {
             for (int i = 0; i < response.length(); i++) {
@@ -129,7 +153,59 @@ public class GestorActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         mAccounts.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,accounts));
-        Log.v("volley_debug","accounts: "+accounts.toString());
+        mAccounts.setSelection(0,true);
     }
+
+    private void loadTrabajador(String credito) {
+        VolleyEverywhere.getInstance(getApplicationContext()).
+                addToRequestQueue(new JsonArrayRequest(
+                        Request.Method.GET,
+                        Constants.GET_FONACOT_TRABAJADOR_BY_ID + "?" + "credito="+credito,
+                        null,
+                        new Response.Listener<JSONArray>() {
+
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                TrabajadorFonacot trabajador = getTrabajador(response);
+                                if (trabajador != null) {
+                                    Singleton.trabajadorFonacot = trabajador;
+
+                                } else {
+                                    Log.v("volley_debug","null trabajador");
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v("volley_debug", "Error Volley: "+ error.getMessage());
+                    }
+                }
+                ));
+    }
+
+    private TrabajadorFonacot getTrabajador(JSONArray response) {
+        TrabajadorFonacot trabajadorFonacot = null;
+        try {
+            trabajadorFonacot = new TrabajadorFonacot(response.getJSONObject(0).getString("credito"),
+                    response.getJSONObject(0).getString("usuario"), response.getJSONObject(0).getString("asignacion"),
+                    response.getJSONObject(0).getString("fecha_asignacion"),response.getJSONObject(0).getString("num_trabajador"),
+                    response.getJSONObject(0).getString("nombre_trabajador"),response.getJSONObject(0).getString("tel_trabajador"),
+                    response.getJSONObject(0).getString("tipo"),response.getJSONObject(0).getString("calle"),
+                    response.getJSONObject(0).getString("delegacion"),response.getJSONObject(0).getString("estado"),
+                    response.getJSONObject(0).getString("codigo_postal"),response.getJSONObject(0).getString("monto_inicial"),
+                    response.getJSONObject(0).getString("saldo_actual"),response.getJSONObject(0).getString("fecha_ejercida_credito"),
+                    response.getJSONObject(0).getString("sucursal_ejercimiento"),response.getJSONObject(0).getString("pago_mensual"),
+                    response.getJSONObject(0).getString("plazo"),response.getJSONObject(0).getString("telefono_trabajo"),
+                    response.getJSONObject(0).getString("rfc"),response.getJSONObject(0).getString("num_seg_social"),
+                    response.getJSONObject(0).getString("email"),response.getJSONObject(0).getString("tel_extra_uno"),
+                    response.getJSONObject(0).getString("tel_extra_dos"));
+            return trabajadorFonacot;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return trabajadorFonacot;
+    }
+
 
 }

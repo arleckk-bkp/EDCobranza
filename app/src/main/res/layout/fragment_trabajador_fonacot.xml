@@ -5,9 +5,313 @@
     tools:context="com.arleckk.edcobranza.ui.TrabajadorFonacotFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
+        android:fillViewport="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="asignacion"/>
+
+                <TextView
+                    android:id="@+id/asignacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="fecha asignacion"/>
+
+                <TextView
+                    android:id="@+id/fecha_asignacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="No. Trabajador"/>
+
+                <TextView
+                    android:id="@+id/num_trabajador"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Teléfono"/>
+
+                <TextView
+                    android:id="@+id/telefono"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn_telefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_call"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Teléfono Trabajo"/>
+
+                <TextView
+                    android:id="@+id/telefono_trabajo"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn_telefono_trabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_call"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Teléfono Extra"/>
+
+                <TextView
+                    android:id="@+id/telefono_extra_uno"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn_telefono_extra_uno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_call"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Teléfono Extra Dos"/>
+
+                <TextView
+                    android:id="@+id/telefono_extra_dos"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn_telefono_extra_dos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_call"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Saldo Actual"/>
+
+                <TextView
+                    android:id="@+id/saldo_actual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="fecha de ejerción del crédito"/>
+
+                <TextView
+                    android:id="@+id/fecha_ejercida_credito"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="sucursal de ejercimiento"/>
+
+                <TextView
+                    android:id="@+id/sucursal_ejercimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="pago mensual"/>
+
+                <TextView
+                    android:id="@+id/pago_mensual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="plazo"/>
+
+                <TextView
+                    android:id="@+id/plazo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="rfc"/>
+
+                <TextView
+                    android:id="@+id/rfc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="N.S.S."/>
+
+                <TextView
+                    android:id="@+id/nss"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_info_height">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="email"/>
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>
