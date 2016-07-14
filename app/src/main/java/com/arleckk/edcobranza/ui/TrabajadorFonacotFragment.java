@@ -1,27 +1,42 @@
 package com.arleckk.edcobranza.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arleckk.edcobranza.R;
 import com.arleckk.edcobranza.model.TrabajadorFonacot;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TrabajadorFonacotFragment extends Fragment {
 
     private View view;
-    private static TextView mAsignacion, mFechaAsignacion, mNoTrabajador, mTelefono, mTelefonoTrabajo, mTelefonoExtraUno, mTelefonoExtraDos,
+    private Activity activity;
+    private TextView mAsignacion, mFechaAsignacion, mNoTrabajador, mTelefono, mTelefonoTrabajo, mTelefonoExtraUno, mTelefonoExtraDos,
             mSaldoActual, mFechaEjercidaCredito, mSucursalEjercimiento, mPagoMensual, mPlazo, mRFC, mNSS, mEmail;
+    private Button mBtnTelefono, mBtnTelefonoTrabajo, mBtnTelefonoExtraUno, mBtnTelefonoExtraDos;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        if(activity != null) {
+            activity = getActivity();
+        }
 
         if(view == null) {
             view = inflater.inflate(R.layout.fragment_trabajador_fonacot,container,false);
@@ -43,13 +58,27 @@ public class TrabajadorFonacotFragment extends Fragment {
         mNSS = (TextView) view.findViewById(R.id.nss);
         mEmail = (TextView) view.findViewById(R.id.email);
 
+        mBtnTelefono = (Button) view.findViewById(R.id.btn_telefono);
+        mBtnTelefonoTrabajo = (Button) view.findViewById(R.id.btn_telefono_trabajo);
+        mBtnTelefonoExtraUno = (Button) view.findViewById(R.id.btn_telefono_extra_uno);
+        mBtnTelefonoExtraDos = (Button) view.findViewById(R.id.btn_telefono_extra_dos);
+
         mAsignacion.setText("trabajador");
-//        return inflater.inflate(R.layout.fragment_trabajador_fonacot,null);
+
+        GestorActivity.onChangeSpinner = new GestorActivity.OnChangeSpinner() {
+            @Override
+            public void onChangeSpinner(Object object) {
+                Log.v("volley_debug","se detecto un cambio en el spinner");
+
+                if(object != null) {
+                    showTrabajador((TrabajadorFonacot) object);
+                }
+            }
+        };
         return view;
     }
 
-    public static void showTrabajador(TrabajadorFonacot trabajador) {
-        Log.v("volley_debug","fragment"+trabajador.toString());
+    public void showTrabajador(final TrabajadorFonacot trabajador) {
         mAsignacion.setText(trabajador.getAsignacion());
         mNoTrabajador.setText(trabajador.getNumTrabajador());
         mTelefono.setText(trabajador.getTelTrabajador());
@@ -64,6 +93,65 @@ public class TrabajadorFonacotFragment extends Fragment {
         mRFC.setText(trabajador.getRfc());
         mNSS.setText(trabajador.getNss());
         mEmail.setText(trabajador.getEmail());
+
+        //eventos
+        mBtnTelefono.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isValidNumber(trabajador.getTelExtraUno())) {
+                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelTrabajador())));
+                } else {
+                    Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mBtnTelefonoTrabajo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isValidNumber(trabajador.getTelExtraUno())) {
+                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelefonoTrabajo())));
+                } else {
+                    Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mBtnTelefonoExtraUno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(isValidNumber(trabajador.getTelExtraUno())) {
+                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelExtraUno())));
+                } else {
+                    Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mBtnTelefonoExtraDos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isValidNumber(trabajador.getTelExtraUno())) {
+                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelExtraDos())));
+                } else {
+                    Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    public boolean isValidNumber(String number) {
+
+        Pattern pattern = Pattern.compile("[0-9]{10}");
+        Matcher matcher = pattern.matcher(number);
+
+        if(matcher.matches()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

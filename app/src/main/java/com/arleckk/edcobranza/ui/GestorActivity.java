@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -33,12 +34,17 @@ import org.json.JSONException;
 
 public class GestorActivity extends AppCompatActivity {
 
+    interface OnChangeSpinner {
+        void onChangeSpinner(Object object);
+    }
+
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     FragmentManager mFragmentManager;
     FragmentTransaction mFragmentTransaction;
     SharedPreferences sharedPreferences;
     private Spinner mAccounts;
+    public static OnChangeSpinner onChangeSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +103,12 @@ public class GestorActivity extends AppCompatActivity {
 
                 if (item != null) {
                     if (!item.equals("")) {
-                        loadTrabajador(mAccounts.getItemAtPosition(position).toString());
+                        loadTrabajador(item);
+                    } else {
+                        Toast.makeText(GestorActivity.this, "Ocurrio un error con los datos",Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(GestorActivity.this, "Ocurrio un error con los datos",Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -168,10 +178,9 @@ public class GestorActivity extends AppCompatActivity {
                             public void onResponse(JSONArray response) {
                                 TrabajadorFonacot trabajador = getTrabajador(response);
                                 if (trabajador != null) {
-                                    Singleton.trabajadorFonacot = trabajador;
-
-                                } else {
-                                    Log.v("volley_debug","null trabajador");
+                                    if(onChangeSpinner != null) {
+                                        onChangeSpinner.onChangeSpinner(trabajador);
+                                    }
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -200,6 +209,7 @@ public class GestorActivity extends AppCompatActivity {
                     response.getJSONObject(0).getString("rfc"),response.getJSONObject(0).getString("num_seg_social"),
                     response.getJSONObject(0).getString("email"),response.getJSONObject(0).getString("tel_extra_uno"),
                     response.getJSONObject(0).getString("tel_extra_dos"));
+            Log.v("volley_debug","getTrabajadorFromResponse: "+trabajadorFonacot.toString());
             return trabajadorFonacot;
         } catch (JSONException e) {
             e.printStackTrace();
