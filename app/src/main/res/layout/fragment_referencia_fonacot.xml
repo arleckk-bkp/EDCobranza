@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.arleckk.edcobranza.ui.ReferenciaFonacotFragment" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="@dimen/text_info_height"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Nom. Ref Uno"/>
+
+                <TextView
+                    android:id="@+id/nombre_ref_uno_fonacot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="@dimen/text_info_height"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Tel. Ref Uno"/>
+
+                <TextView
+                    android:id="@+id/tel_ref_uno_fonacot"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"/>
+
+                <Button
+                    android:id="@+id/btn_tel_ref_uno_fonacot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_call"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="@dimen/text_info_height"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Nom. Ref Dos"/>
+
+                <TextView
+                    android:id="@+id/nombre_ref_dos_fonacot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top">
+
+                <TextView
+                    android:layout_width="@dimen/text_info"
+                    android:layout_height="@dimen/text_info_height"
+                    android:textSize="@dimen/text_info_size"
+                    android:text="Tel. Ref Dos"/>
+
+                <TextView
+                    android:id="@+id/tel_ref_dos_fonacot"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_info_size"/>
+
+                <Button
+                    android:id="@+id/btn_tel_ref_dos_fonacot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_call"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

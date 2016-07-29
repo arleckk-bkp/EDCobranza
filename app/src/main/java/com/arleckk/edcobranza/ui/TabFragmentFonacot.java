@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import com.arleckk.edcobranza.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by arleckk on 12/07/16.
  */
@@ -19,7 +22,7 @@ public class TabFragmentFonacot extends Fragment{
 
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int items = 4;
+    public static int items = 5;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         /**
@@ -29,10 +32,13 @@ public class TabFragmentFonacot extends Fragment{
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
 
+        //establece el numero maximo de vistas que estaran cargadas en memoria
+        viewPager.setOffscreenPageLimit(5);
+        setupViewPager(viewPager);
         /**
          *Set an Apater for the View Pager
          */
-        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
+//        viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
 
         /**
          * Now , this is a workaround ,
@@ -47,6 +53,47 @@ public class TabFragmentFonacot extends Fragment{
             }
         });
         return x;
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFrag(new TrabajadorFonacotFragment(), "Trabajador");
+        adapter.addFrag(new ReferenciaFonacotFragment(), "Referencia");
+        adapter.addFrag(new TipificacionFonacotFragment(), "Tipificaciones");
+        adapter.addFrag(new MapsFragment(), "Mapa");
+        adapter.addFrag(new CapturaFragment(), "Capturar");
+        viewPager.setAdapter(adapter);
+
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFrag(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -65,8 +112,9 @@ public class TabFragmentFonacot extends Fragment{
             switch (position){
                 case 0 : return new TrabajadorFonacotFragment();
                 case 1 : return new ReferenciaFonacotFragment();
-                case 2 : return new ReferenciaFonacotFragment();
+                case 2 : return new TipificacionFonacotFragment();
                 case 3 : return new MapsFragment();
+                case 4: return new CapturaFragment();
             }
             return null;
         }
@@ -92,6 +140,8 @@ public class TabFragmentFonacot extends Fragment{
                     return "Tipificaciones";
                 case 3:
                     return "Mapa";
+                case 4:
+                    return "Captura";
             }
             return null;
         }

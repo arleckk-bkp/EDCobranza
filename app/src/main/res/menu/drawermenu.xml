@@ -2,12 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Actualizar"
-        android:id="@+id/nav_item_update" />
+        android:id="@+id/nav_item_update"
+        android:icon="@android:drawable/ic_menu_upload"/>
 
     <item android:title="Tomar Foto"
-        android:id="@+id/nav_item_picture" />
+        android:id="@+id/nav_item_picture"
+        android:icon="@android:drawable/ic_menu_camera"/>
 
     <item android:title="Cerrar Sesion"
-        android:id="@+id/nav_item_log_off" />
+        android:id="@+id/nav_item_log_off"
+        android:icon="@android:drawable/ic_delete"/>
 
 </menu>

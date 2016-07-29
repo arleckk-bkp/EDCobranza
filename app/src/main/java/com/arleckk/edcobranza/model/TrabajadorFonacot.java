@@ -29,6 +29,7 @@ public class TrabajadorFonacot {
     private String email;
     private String telExtraUno;
     private String telExtraDos;
+    private String direccion;
 
     public TrabajadorFonacot(String credito, String usuario, String asignacion, String fechaAsignacion,
                              String numTrabajador, String nombreTrabajador, String telTrabajador, String tipo,
@@ -60,6 +61,39 @@ public class TrabajadorFonacot {
         this.email = email;
         this.telExtraUno = telExtraUno;
         this.telExtraDos = telExtraDos;
+        this.direccion = "";
+        setDireccion();
+    }
+
+    public void setDireccion() {
+        if(isValid(calle)) {
+            direccion += " "+calle;
+        }
+        if(isValid(delegacion)) {
+            direccion += " "+delegacion;
+        }
+        if(isValid(estado)) {
+            direccion += " "+estado;
+        }
+        if(isValid(codigoPostal)) {
+            direccion += " "+codigoPostal;
+        }
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public boolean isValid(String text){
+        if(text != null) {
+            if(!text.equals("")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public String getCredito() {

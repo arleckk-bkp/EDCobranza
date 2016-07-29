@@ -16,8 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arleckk.edcobranza.R;
+import com.arleckk.edcobranza.global.Constants;
+import com.arleckk.edcobranza.global.Utilities;
 import com.arleckk.edcobranza.model.TrabajadorFonacot;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,15 +66,17 @@ public class TrabajadorFonacotFragment extends Fragment {
         mBtnTelefonoExtraUno = (Button) view.findViewById(R.id.btn_telefono_extra_uno);
         mBtnTelefonoExtraDos = (Button) view.findViewById(R.id.btn_telefono_extra_dos);
 
-        mAsignacion.setText("trabajador");
-
-        GestorActivity.onChangeSpinner = new GestorActivity.OnChangeSpinner() {
+        GestorActivity.onChangeSpinnerTrabajadorFonacot = new GestorActivity.OnChangeSpinnerFonacot() {
             @Override
             public void onChangeSpinner(Object object) {
-                Log.v("volley_debug","se detecto un cambio en el spinner");
-
                 if(object != null) {
-                    showTrabajador((TrabajadorFonacot) object);
+                    TrabajadorFonacot trabajador = (TrabajadorFonacot) object;
+                    if(trabajador != null) {
+                        showTrabajador(trabajador);
+                    } else {
+                        Toast.makeText(view.getContext(),"No se encontro el trabajador",Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         };
@@ -80,6 +85,7 @@ public class TrabajadorFonacotFragment extends Fragment {
 
     public void showTrabajador(final TrabajadorFonacot trabajador) {
         mAsignacion.setText(trabajador.getAsignacion());
+        mFechaAsignacion.setText(trabajador.getFechaAsignacion());
         mNoTrabajador.setText(trabajador.getNumTrabajador());
         mTelefono.setText(trabajador.getTelTrabajador());
         mTelefonoTrabajo.setText(trabajador.getTelefonoTrabajo());
@@ -98,8 +104,8 @@ public class TrabajadorFonacotFragment extends Fragment {
         mBtnTelefono.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidNumber(trabajador.getTelExtraUno())) {
-                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelTrabajador())));
+                if(Utilities.isValidNumber(trabajador.getTelTrabajador())) {
+                    startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+mTelefono.getText().toString())));
                 } else {
                     Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
                 }
@@ -109,8 +115,8 @@ public class TrabajadorFonacotFragment extends Fragment {
         mBtnTelefonoTrabajo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidNumber(trabajador.getTelExtraUno())) {
-                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelefonoTrabajo())));
+                if(Utilities.isValidNumber(trabajador.getTelefonoTrabajo())) {
+                    startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+mTelefonoTrabajo.getText().toString())));
                 } else {
                     Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
                 }
@@ -121,8 +127,8 @@ public class TrabajadorFonacotFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(isValidNumber(trabajador.getTelExtraUno())) {
-                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelExtraUno())));
+                if(Utilities.isValidNumber(trabajador.getTelExtraUno())) {
+                    startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+mTelefonoExtraUno.getText().toString())));
                 } else {
                     Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
                 }
@@ -132,8 +138,8 @@ public class TrabajadorFonacotFragment extends Fragment {
         mBtnTelefonoExtraDos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidNumber(trabajador.getTelExtraUno())) {
-                    activity.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+trabajador.getTelExtraDos())));
+                if(Utilities.isValidNumber(trabajador.getTelExtraDos())) {
+                    startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+mTelefonoExtraDos.getText().toString())));
                 } else {
                     Toast.makeText(view.getContext(),"El número no es valido",Toast.LENGTH_SHORT).show();
                 }
@@ -142,16 +148,5 @@ public class TrabajadorFonacotFragment extends Fragment {
 
     }
 
-    public boolean isValidNumber(String number) {
-
-        Pattern pattern = Pattern.compile("[0-9]{10}");
-        Matcher matcher = pattern.matcher(number);
-
-        if(matcher.matches()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 }

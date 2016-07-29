@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import com.arleckk.edcobranza.R;
 import com.arleckk.edcobranza.controller.DirectionsJSONParser;
+import com.arleckk.edcobranza.model.TrabajadorFonacot;
+import com.arleckk.edcobranza.task.UpdateMyLocationTask;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -70,15 +72,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     private LatLng latLngCurrentLocation;
     private List<Address> addressList;
     private ArrayList<LatLng> markerPoints;
-    //private List<Marker> originMarkers = new ArrayList<>();
-    //private List<Marker> destinationMarkers = new ArrayList<>();
-    //private List<Polyline> polylinePaths = new ArrayList<>();
+    private TrabajadorFonacot trabajador;
+    private UpdateMyLocationTask locationTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        Log.v("maps", "onCreate MapsFragment");
         fragmentContext = getActivity().getApplicationContext();
         locationManager = (LocationManager) getActivity().getSystemService(fragmentContext.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(fragmentContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(fragmentContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -91,35 +91,77 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 10, this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if(trabajador != null) {
+            editDestinyLocation.setText(trabajador.getDireccion());
+        } else {
+            Log.v("maps_debug","onStart trabajador null");
+        }
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("maps", "onCreateView MapsFragment");
         if(view == null) {
             view = inflater.inflate(R.layout.fragment_maps, container, false);
         }
+
         searchForm = (RelativeLayout) view.findViewById(R.id.search_form);
         mapsLayout = (FrameLayout) view.findViewById(R.id.frame_maps);
         editCurrentLocation = (EditText) view.findViewById(R.id.edit_current_location);
         editDestinyLocation = (EditText) view.findViewById(R.id.edit_destiny_location);
         buttonSearch = (ImageButton) view.findViewById(R.id.button_search_maps);
-//        buttonSearch.setOnClickListener(this);
+
+        GestorActivity.onChangeSpinnerMaps = new GestorActivity.OnChangeSpinnerMaps() {
+            @Override
+            public void onChangeSpinner(Object object) {
+                trabajador = (TrabajadorFonacot) object;
+                if(trabajador != null) {
+                    setDestinyLocation(trabajador.getDireccion());
+                } else {
+                    Log.v("maps_debug","trabajador null");
+                    if(map != null) {
+                        map.clear();
+                        if (!markerPoints.isEmpty()) {
+                            markerPoints.clear();
+                        }
+                    }
+                }
+            }
+        };
+
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setRoute(v);
             }
         });
+
         return view;
+    }
+
+    public void setDestinyLocation(String destinyLocation) {
+        if(destinyLocation != null) {
+            if(!destinyLocation.equals("")) {
+                editDestinyLocation.setText(destinyLocation);
+            } else {
+                Toast.makeText(view.getContext(),"No se tiene la dirección del trabajador",Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(view.getContext(),"No se tiene la dirección del trabajador",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        Log.v("maps", "onCreateActivityCreated MapsFragment");
-        super.onActivityCreated(savedInstanceState);
+
         FragmentManager fm = getChildFragmentManager();
         fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
         if (fragment == null) {
@@ -127,11 +169,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             fm.beginTransaction().replace(R.id.map, fragment).commit();
         }
         fragment.getMapAsync(this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.v("maps", "onReady maps Activity");
         map = googleMap;
         if (map != null) {
             setUpMap();
@@ -197,6 +239,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             try {
                 addressList = geocoder.getFromLocationName(destinyLocation, 1);
             } catch (IOException e) {
+                Toast.makeText(getContext(), "El servicio de maps no esta disponible por el momento",Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             if (!(addressList == null) ) {
@@ -213,11 +256,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                 for(int i = 0; i < markerPoints.size(); i++) {
                     switch (i){
                         case 0:
-                            Log.v("maps","current location: "+markerPoints.get(i).toString());
+                            Log.v("maps_debug","current location: "+markerPoints.get(i).toString());
                             map.addMarker(new MarkerOptions().position(markerPoints.get(i)).title("Current Location"));
                             break;
                         case 1:
-                            Log.v("maps","destiny location: "+markerPoints.get(i).toString());
+                            Log.v("maps_debug","destiny location: "+markerPoints.get(i).toString());
                             map.addMarker(new MarkerOptions().position(markerPoints.get(i)).title("Destiny Location"));
                             break;
                     }
@@ -303,7 +346,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             br.close();
 
         }catch(Exception e){
-            Log.v("maps", "exception while downloading "+e.toString());
+            Log.v("maps_debug", "exception while downloading "+e.toString());
         }finally{
             iStream.close();
             urlConnection.disconnect();
@@ -404,55 +447,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-        latLngCurrentLocation = new LatLng(location.getLatitude(),location.getLongitude());
-
-        if(map != null) {
-            if(geocoder == null) {
-                geocoder = new Geocoder(fragmentContext);
-            }
-            String sCurrentLocation = "";
-            editCurrentLocation.setText("");
-            Toast.makeText(fragmentContext,"Location changed: Lat "+location.getLatitude()+
-                    " Lng: "+location.getLongitude(),Toast.LENGTH_SHORT).show();
-            Log.v("maps","Location changed: Lat "+location.getLatitude()+
-                    " Lng: "+location.getLongitude());
-            LatLng currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
-            map.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
-            map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-
-            //change lat & long into address
-            try {
-                addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if(addressList != null) {
-                if(!addressList.isEmpty()) {
-                    String address = addressList.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                    String city = addressList.get(0).getLocality();
-                    String state = addressList.get(0).getAdminArea();
-                    String country = addressList.get(0).getCountryName();
-                    String postalCode = addressList.get(0).getPostalCode();
-                    String knownName = addressList.get(0).getFeatureName();
-//                    sCurrentLocation = address + " " + city + " " + state + " " + country + " " + postalCode + " " + knownName+".";
-
-                    sCurrentLocation += setAddress(address) + " " + setAddress(city) + " " + setAddress(state) + " " +
-                            setAddress(country) + " " + setAddress(postalCode) + " " + setAddress(knownName) + ".";
-
-                } else {
-                    Log.v("maps","error al convertir las coordenadas en direccion");
-                }
-            }
-
-            editCurrentLocation.setText(sCurrentLocation);
-        }
-
-    }
-
     private String setAddress(String text) {
         if(text != null) {
             if(!text.equals("")){
@@ -463,6 +457,81 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         } else {
             return "";
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        latLngCurrentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+
+        locationTask = new UpdateMyLocationTask(getContext());
+
+        locationTask.execute(location);
+
+//        Toast.makeText(fragmentContext,"Location changed: Lat "+location.getLatitude()+
+//                " Lng: "+location.getLongitude(),Toast.LENGTH_SHORT).show();
+
+//        Intent intent = new Intent("UPDATE_MY_LOCATION");
+//        intent.putExtra("location",location);
+//        view.getContext().sendBroadcast(intent);
+
+//        if(map != null) {
+//            if(geocoder == null) {
+//                geocoder = new Geocoder(fragmentContext);
+//            }
+//            String sCurrentLocation = "";
+//            editCurrentLocation.setText("");
+//            Toast.makeText(fragmentContext,"Location changed: Lat "+location.getLatitude()+
+//                    " Lng: "+location.getLongitude(),Toast.LENGTH_SHORT).show();
+//            Log.v("maps_debug","Location changed: Lat "+location.getLatitude()+
+//                    " Lng: "+location.getLongitude());
+//            LatLng currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
+//            map.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
+//            map.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+//
+//            //change lat & long into address
+//            try {
+//                addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            if(addressList != null) {
+//                if(!addressList.isEmpty()) {
+//                    String address = addressList.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+//                    String city = addressList.get(0).getLocality();
+//                    String state = addressList.get(0).getAdminArea();
+//                    String country = addressList.get(0).getCountryName();
+//                    String postalCode = addressList.get(0).getPostalCode();
+//                    String knownName = addressList.get(0).getFeatureName();
+////                    sCurrentLocation = address + " " + city + " " + state + " " + country + " " + postalCode + " " + knownName+".";
+//
+//                    sCurrentLocation += setAddress(address) + " " + setAddress(city) + " " + setAddress(state) + " " +
+//                            setAddress(country) + " " + setAddress(postalCode) + " " + setAddress(knownName) + ".";
+//
+//                } else {
+//                    Log.v("maps_debug","error al convertir las coordenadas en direccion");
+//                }
+//            }
+//
+//            UpdateLocationTask task = new UpdateLocationTask();
+//            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("preferencias",getActivity().MODE_PRIVATE);
+//            String user = sharedPreferences.getString("user","null");
+//            try {
+//                user = new Cifrado().decrypt(user);
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
+//            String [] params = {
+//                    user,
+//                    String.valueOf(location.getLatitude()),
+//                    String.valueOf(location.getLongitude()),
+//                    Utilities.getDate() + " " + Utilities.getHour()
+//            };
+//            task.execute(params);
+//            editCurrentLocation.setText(sCurrentLocation);
+//        }
+
     }
 
     @Override
